@@ -78,7 +78,7 @@ class Book(models.Model):
     owner = models.ForeignKey(
         "users.User",
         verbose_name="Владелец",
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         blank=True,
         null=True,
     )

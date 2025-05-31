@@ -47,23 +47,10 @@ class User(AbstractUser):
         verbose_name="Аватар",
         help_text="Загрузите аватар",
     )
-    favourite_book = models.CharField(
-        max_length=150,
-        verbose_name="Любимая книга",
-        blank=True,
-        null=True,
-    )
-    favourite_author = models.ManyToManyField(
-        Author,
-        verbose_name="Любимый автор",
-        blank=True,
-        null=True,
-    )
     favourite_genre = models.ManyToManyField(
         Genre,
         verbose_name="Любимый жанр",
         blank=True,
-        null=True,
     )
 
     USERNAME_FIELD = "email"

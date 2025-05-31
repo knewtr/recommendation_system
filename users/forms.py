@@ -17,24 +17,12 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
         required=False,
         label="Любимые жанры",
     )
-    favourite_author = forms.ModelMultipleChoiceField(
-        queryset=Author.objects.all(),
-        widget=forms.CheckboxSelectMultiple(
-            attrs={
-                "class": "author-selector",
-            }
-        ),
-        required=False,
-        label="Любимые fdnjhs",
-    )
 
     class Meta:
         model = User
         fields = (
             "email",
             "avatar",
-            "favourite_book",
-            "favourite_author",
             "favourite_genre",
             "password1",
             "password2",
@@ -56,22 +44,10 @@ class UserUpdateForm(StyleFormMixin, UserCreationForm):
         required=False,
         label="Любимые жанры",
     )
-    favourite_author = forms.ModelMultipleChoiceField(
-        queryset=Author.objects.all(),
-        widget=forms.CheckboxSelectMultiple(
-            attrs={
-                "class": "author-selector",
-            }
-        ),
-        required=False,
-        label="Любимые авторы",
-    )
 
     class Meta:
         model = User
         fields = (
             "avatar",
-            "favourite_book",
-            "favourite_author",
             "favourite_genre",
         )

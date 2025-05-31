@@ -10,11 +10,13 @@ class Recommendation(models.Model):
         "users.User",
         verbose_name="Пользователь",
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
-    book = models.ForeignKey(
+    books = models.ManyToManyField(
         "books.Book",
-        verbose_name="Книга",
-        on_delete=models.CASCADE,
+        related_name="recommendations",
+        verbose_name="Рекомендованные книги",
     )
     method = models.CharField(
         choices=METHODS,
