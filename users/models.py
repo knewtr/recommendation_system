@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
+from books.models import Author, Genre
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -50,21 +52,18 @@ class User(AbstractUser):
         verbose_name="Любимая книга",
         blank=True,
         null=True,
-        help_text="Укажите любимую книгу",
     )
-    favourite_author = models.CharField(
-        max_length=150,
+    favourite_author = models.ManyToManyField(
+        Author,
         verbose_name="Любимый автор",
         blank=True,
         null=True,
-        help_text="Укажите любимого автора",
     )
-    favourite_genre = models.CharField(
-        max_length=150,
+    favourite_genre = models.ManyToManyField(
+        Genre,
         verbose_name="Любимый жанр",
         blank=True,
         null=True,
-        help_text="Укажите любимый жанр",
     )
 
     USERNAME_FIELD = "email"

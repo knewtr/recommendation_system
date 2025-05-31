@@ -1,3 +1,4 @@
+from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import BooleanField, ModelForm
 
@@ -17,6 +18,11 @@ class StyleFormMixin:
 
 
 class BookForm(StyleFormMixin, ModelForm):
+    publication_date = forms.DateField(
+        input_formats=["%d.%m.%Y"],
+        widget=forms.DateInput(attrs={"placeholder": "ДД.ММ.ГГГГ"}),
+    )
+
     class Meta:
         model = Book
         fields = "__all__"
@@ -37,6 +43,11 @@ class BookForm(StyleFormMixin, ModelForm):
 
 
 class AuthorForm(StyleFormMixin, ModelForm):
+    birth_date = forms.DateField(
+        input_formats=["%d.%m.%Y"],
+        widget=forms.DateInput(attrs={"placeholder": "ДД.ММ.ГГГГ"}),
+    )
+
     class Meta:
         model = Author
         fields = [

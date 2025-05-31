@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -15,7 +16,9 @@ class Genre(models.Model):
 
 
 class Author(models.Model):
-    first_name = models.CharField(max_length=150, verbose_name="Имя автора")
+    first_name = models.CharField(
+        max_length=150, unique=True, verbose_name="Имя автора"
+    )
     last_name = models.CharField(max_length=150, verbose_name="Фамилия автора")
     birth_date = models.DateField(verbose_name="Дата рождения")
     book = models.ForeignKey(
@@ -39,6 +42,9 @@ class Author(models.Model):
         verbose_name = "автор"
         verbose_name_plural = "авторы"
         ordering = ["last_name"]
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
 
 class Book(models.Model):
@@ -75,6 +81,11 @@ class Book(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+    )
+    rating = models.FloatField(
+        default=0.0,
+        validators=[MinValueValidator(0.0), MaxValueValidator(10.0)],
+        verbose_name="Рейтинг",
     )
 
     class Meta:

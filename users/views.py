@@ -1,39 +1,45 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
+from django.contrib.auth.views import LoginView as AuthLoginView
+from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from users.forms import UserRegisterForm, UserUpdateForm
+from connections.models import Connection
+from users.forms import UserLoginForm, UserRegisterForm, UserUpdateForm
 from users.models import User
 
 
-class UserCreateView(LoginRequiredMixin, CreateView):
-    model = User
+class RegisterView(LoginRequiredMixin, CreateView):
     form_class = UserRegisterForm
+    template_name = "users/register.html"
     success_url = reverse_lazy("users:login")
 
     def form_valid(self, form):
-        user = form.save()
-        user.is_active = False
-        user.token = secrets.token_hex(16)
-        user.save()
-        host = self.request.get_host()
-        url = f"http://{host}/users/email-confirm/{user.token}/"
-        send_mail(
-            subject="Подтверждение почты",
-            message=f"Перейдите по ссылке, чтобы подтвердить почту: {url}",
-            from_email=EMAIL_HOST_USER,
-            recipient_list=[
-                user.email,
-            ],
-        )
+        response = super().form_valid(form)
+        messages.success(self.request, "Вы успешно зарегистрировались!")
+        return response
+
+
+class LoginView(AuthLoginView):
+    template_name = "users/login.html"
+    form_class = UserLoginForm
+    success_url = reverse_lazy("books:home")
+
+    def form_valid(self, form):
+        from django.contrib.auth import login
+
+        user = form.get_user()
+        login(self.request, user)
         return super().form_valid(form)
 
-def email_verification(request, token):
-    user = get_object_or_404(User, token=token)
-    user.is_active = True
-    user.save()
-    return redirect(reverse("users:login"))
+
+class LogoutView(AuthLogoutView):
+    next_page = reverse_lazy("users:login")
+
+    def dispatch(self, request, *args, **kwargs):
+        messages.info(request, "Возвращайтесь!")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
@@ -49,14 +55,20 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-def view_profile(request):
-    user = request.user
-    context = {
-        "user": user,
-    }
-    return render(request, context=context, template_name="users/profile.html")
-
-
 class UserListView(LoginRequiredMixin, ListView):
     model = User
     template_name = "users/user_list.html"
+    paginate_by = 10
+
+
+class ProfileView(DetailView):
+    model = User
+    template_name = "users/profile.html"
+    context_object_name = "user_profile"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["rating"] = Connection.objetcs.filter(user=self.object).select_related(
+            "book"
+        )
+        return context
