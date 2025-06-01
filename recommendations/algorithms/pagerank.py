@@ -35,4 +35,4 @@ class PageRank:
 
         user = User.objects.get(id=user_id)
         recommendation = create_recommendation(user, "pagerank", top_n_books)
-        return list(recommendation.book.all())
+        return list(recommendation.books.all())

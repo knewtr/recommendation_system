@@ -35,7 +35,7 @@
               </h2>
               <div id="collapseKNN" class="accordion-collapse collapse show" data-bs-parent="#recommendationAccordion">
                 <div class="accordion-body">
-                    {% for book in pr_rec %}
+                    {% for book in knn_rec %}
                     <a href="{% url 'books:book_detail' book.id %}" class="btn btn-outline-secondary" data-rec-type="knn">
                         <span> {{ book.title }} {{ book.author }}</span>
                         <span class="badge bg-outline text-white ms-2"> {{ book.rating|floatformat:2 }} </span>

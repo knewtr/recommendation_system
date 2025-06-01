@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -9,10 +11,14 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
-
+from config.settings import CACHE_ENABLED
 from books.forms import AuthorForm, BookForm, GenreForm
 from books.models import Author, Book, Genre
-from books.services import get_books_by_author, get_books_by_genre, get_statistics
+from books.services import get_books_by_genre, get_statistics
+from connections.models import Connection
+from connections.forms import ConnectionForm
+from recommendations.algorithms.knn import KNNeighbour
+from recommendations.algorithms.pagerank import PageRank
 
 
 class AuthorCreateView(LoginRequiredMixin, CreateView):
@@ -131,10 +137,41 @@ class BookListView(ListView):
     model = Book
     template_name = "book_list.html"
 
+    def get_queryset(self):
+        if not CACHE_ENABLED:
+            return super().get_queryset()
+        key = "book_list"
+        books = cache.get(key)
+        if books is not None:
+            return books
+        books = super().get_queryset()
+        cache.set(key, books, 60 * 15)
+        return books
+
 
 class BookDetailView(DetailView):
     model = Book
     template_name = "book_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book = self.get_object()
+        connection = Connection.objects.filter(
+            user=self.request.user, book=book
+        ).first()
+        context["connection_form"] = ConnectionForm(instance=connection)
+        context["user_rating"] = connection.rating if connection else None
+        return context
+
+    def post(self, request, *args, **kwargs):
+        book = self.get_object()
+        connection, created = Connection.objects.get_or_create(
+            user=request.user, book=book
+        )
+        form = ConnectionForm(request.POST, instance=connection)
+        if form.is_valid():
+            form.save()
+        return redirect("books:book_detail", pk=book.pk)
 
 
 class BookUpdateView(LoginRequiredMixin, UpdateView):

@@ -67,3 +67,16 @@ class ConnectionViewSet(ModelViewSet):
 
     def create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class RecommendationAPIView(APIView):
+
+    def get(self, request):
+        pr_rec = PageRank.recommendations(request.user.id, 5)
+        knn_rec = KNN.recommendations(request.user.id, 5)
+        serialized_data = {
+            "pr_rec": FilmSerializer(pr_rec, many=True).data,
+            "knn_rec": FilmSerializer(knn_rec, many=True).data,
+        }
+
+        return Response(serialized_data)

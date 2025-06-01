@@ -72,8 +72,8 @@ def visualize_graph(G):
     plt.show()
 
 
-def create_recommendation(user, method, book_id):
+def create_recommendation(user, method, book_list):
     recommendation = Recommendation.objects.create(user=user, method=method)
-    recommendation.books.set(Book.objects.filter(id__in=book_ids))
+    recommendation.books.add(*Book.objects.filter(id__in=book_list))
     recommendation.save()
     return recommendation

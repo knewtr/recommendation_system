@@ -10,7 +10,7 @@ from users.forms import UserLoginForm, UserRegisterForm, UserUpdateForm
 from users.models import User
 
 
-class RegisterView(LoginRequiredMixin, CreateView):
+class RegisterView(CreateView):
     form_class = UserRegisterForm
     template_name = "users/register.html"
     success_url = reverse_lazy("users:login")
@@ -64,11 +64,13 @@ class UserListView(LoginRequiredMixin, ListView):
 class ProfileView(DetailView):
     model = User
     template_name = "users/profile.html"
-    context_object_name = "user_profile"
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["rating"] = Connection.objetcs.filter(user=self.object).select_related(
+        context["ratings"] = Connection.objects.filter(user=self.object).select_related(
             "book"
         )
         return context
