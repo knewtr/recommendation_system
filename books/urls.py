@@ -1,25 +1,12 @@
 from django.urls import path
 
 from books.apps import BooksConfig
-from books.views import (
-    AuthorCreateView,
-    AuthorDeleteView,
-    AuthorDetailView,
-    AuthorListView,
-    AuthorUpdateView,
-    BookCreateView,
-    BookDeleteView,
-    BookDetailView,
-    BookListView,
-    BookUpdateView,
-    GenreCreateView,
-    GenreDeleteView,
-    GenreDetailView,
-    GenreListView,
-    GenreUpdateView,
-    HomeView,
-    StatisticsView,
-)
+from books.views import (AuthorCreateView, AuthorDeleteView, AuthorDetailView,
+                         AuthorListView, AuthorUpdateView, BookCreateView,
+                         BookDeleteView, BookDetailView, BookListView,
+                         BookUpdateView, GenreCreateView, GenreDeleteView,
+                         GenreDetailView, GenreListView, GenreUpdateView,
+                         HomeView, StatisticsView)
 
 app_name = BooksConfig.name
 

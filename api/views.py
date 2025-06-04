@@ -1,13 +1,10 @@
-from rest_framework.generics import (
-    CreateAPIView,
-    DestroyAPIView,
-    ListAPIView,
-    RetrieveAPIView,
-    UpdateAPIView,
-)
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView)
 from rest_framework.viewsets import ModelViewSet
 
-from api.serializers import BookDetailedSerializer, BookSerializer, UserSerializer
+from api.serializers import (BookDetailedSerializer, BookSerializer,
+                             UserSerializer)
 from books.models import Book
 from connections.models import Connection
 from connections.serializers import ConnectionSerializer

@@ -8,15 +8,15 @@ from users.models import User
 
 class UserRegisterForm(StyleFormMixin, UserCreationForm):
     favourite_genre = forms.ModelMultipleChoiceField(
-    queryset=Genre.objects.all(),
-    widget=forms.CheckboxSelectMultiple(
-        attrs={
-            "class": "genre-selector",
-        }
-    ),
-    required=False,
-    label="Любимые жанры",
-)
+        queryset=Genre.objects.all(),
+        widget=forms.CheckboxSelectMultiple(
+            attrs={
+                "class": "genre-selector",
+            }
+        ),
+        required=False,
+        label="Любимые жанры",
+    )
 
     class Meta:
         model = User

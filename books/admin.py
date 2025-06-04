@@ -8,7 +8,7 @@ from books.models import Author, Book, Genre
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     formfield_overrides = {
-        models.DateField: {'widget': DateInput(format='%d.%m.%Y')},
+        models.DateField: {"widget": DateInput(format="%d.%m.%Y")},
     }
     list_display = ("id", "title")
     list_filter = ("genre",)

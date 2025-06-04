@@ -1,9 +1,8 @@
 import math
 
-from recommendations.services import create_recommendation
-
 from books.models import Book
 from connections.models import Connection
+from recommendations.services import create_recommendation
 from users.models import User
 
 

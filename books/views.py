@@ -1,22 +1,17 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
-from django.urls import reverse_lazy
 from django.shortcuts import redirect
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    ListView,
-    TemplateView,
-    UpdateView,
-)
-from config.settings import CACHE_ENABLED
+from django.urls import reverse_lazy
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  TemplateView, UpdateView)
+
 from books.forms import AuthorForm, BookForm, GenreForm
 from books.models import Author, Book, Genre
 from books.services import get_books_by_genre, get_statistics
-from connections.models import Connection
+from config.settings import CACHE_ENABLED
 from connections.forms import ConnectionForm
+from connections.models import Connection
 from recommendations.algorithms.knn import KNNeighbour
 from recommendations.algorithms.pagerank import PageRank
 
@@ -204,6 +199,7 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
 
 class StatisticsView(TemplateView):
     template_name = "statistics.html"

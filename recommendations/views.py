@@ -1,10 +1,9 @@
-from django.core.cache import cache
-from config.settings import CACHE_ENABLED
-
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
+from config.settings import CACHE_ENABLED
 from recommendations.algorithms.knn import KNNeighbour
 from recommendations.algorithms.pagerank import PageRank
 
