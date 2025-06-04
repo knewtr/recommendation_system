@@ -13,6 +13,8 @@
 1. Склонируйте репозиторий
 ```
 git clone https://github.com/knewtr/recommendation_system
+cd recommendation_sys
+docker-compose up --build
 ```
 2. Установите зависимости:
 ```
@@ -35,6 +37,9 @@ LOCATION=redis://127.0.0.1:6379/1
 redis-server.exe
 ```
 После запуска главная страница будет доступна по этому адресу http://localhost:8000/
+
+## Документация API:
+http://localhost:8000/swagger/
 
 ## Визуализация графов
 Для визуализации выполните команду:

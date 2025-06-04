@@ -1,7 +1,9 @@
+from rest_framework.response import Response
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
                                      UpdateAPIView)
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from api.serializers import (BookDetailedSerializer, BookSerializer,
                              UserSerializer)
@@ -14,6 +16,7 @@ from users.models import User
 class UserCreateAPIView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
         user = serializer.save()
@@ -62,18 +65,32 @@ class ConnectionViewSet(ModelViewSet):
             return Connection.objects.all()
         return Connection.objects.filter(user=user)
 
-    def create(self, serializer):
+    def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 
 class RecommendationAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         pr_rec = PageRank.recommendations(request.user.id, 5)
         knn_rec = KNN.recommendations(request.user.id, 5)
         serialized_data = {
-            "pr_rec": FilmSerializer(pr_rec, many=True).data,
-            "knn_rec": FilmSerializer(knn_rec, many=True).data,
+            "pr_rec": BookSerializer(pr_rec, many=True).data,
+            "knn_rec": BookSerializer(knn_rec, many=True).data,
         }
-
         return Response(serialized_data)
+
+
+class StatisticsAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        statistics_data = get_statistics()
+        serialized_data = {
+            "top_books": BookSerializer(
+                statistics_data["top_books"], many=True
+            ).data,
+        }
+        statistics_data.update(serialized_data)
+        return Response(statistics_data)
