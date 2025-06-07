@@ -1,18 +1,13 @@
 from django.urls import path
 from rest_framework.permissions import AllowAny
 from rest_framework.routers import SimpleRouter
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
-from api.views import (
-    UserCreateAPIView,
-    UserUpdateAPIView,
-    UserRetrieveAPIView,
-    UserListAPIView,
-    UserDestroyAPIView,
-    StatisticsAPIView,
-    RecommendationAPIView,
-    ConnectionViewSet,
-)
+from api.views import (ConnectionViewSet, RecommendationAPIView,
+                       StatisticsAPIView, UserCreateAPIView,
+                       UserDestroyAPIView, UserListAPIView,
+                       UserRetrieveAPIView, UserUpdateAPIView)
 from users.apps import UsersConfig
 
 app_name = UsersConfig.name

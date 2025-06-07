@@ -8,7 +8,8 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 
 from books.forms import AuthorForm, BookForm, GenreForm
 from books.models import Author, Book, Genre
-from books.services import get_books_by_genre, get_statistics
+from books.services import (get_books_by_author, get_books_by_genre,
+                            get_statistics)
 from config.settings import CACHE_ENABLED
 from connections.forms import ConnectionForm
 from connections.models import Connection
@@ -125,7 +126,9 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         user = self.request.user
         book.owner = user
         book.save()
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        cache.delete("book_list_ids")
+        return response
 
 
 class BookListView(ListView):
@@ -135,13 +138,15 @@ class BookListView(ListView):
     def get_queryset(self):
         if not CACHE_ENABLED:
             return super().get_queryset()
-        key = "book_list"
-        books = cache.get(key)
-        if books is not None:
-            return books
-        books = super().get_queryset()
-        cache.set(key, books, 60 * 15)
-        return books
+        key = "book_list_ids"
+        book_ids = cache.get(key)
+        if book_ids is not None:
+            return Book.objects.filter(id__in=book_ids)
+
+        queryset = super().get_queryset()
+        book_ids = list(queryset.values_list("id", flat=True))
+        cache.set(key, book_ids, 60 * 15)
+        return queryset
 
 
 class BookDetailView(DetailView):

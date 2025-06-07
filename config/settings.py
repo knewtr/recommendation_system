@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     "recommendations",
     "api",
     "drf_yasg",
+    "django_filters",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [

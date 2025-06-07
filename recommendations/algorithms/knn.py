@@ -32,7 +32,7 @@ class KNNeighbour:
                 if (
                     Connection.objects.filter(user=n, book=book)
                     .exclude(rating=None)
-                    .exsist()
+                    .exists()
                 ):
                     b = Connection.objects.get(user=n, book=book).rating
                     total += (a - b) ** 2

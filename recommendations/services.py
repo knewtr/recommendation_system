@@ -1,3 +1,5 @@
+import matplotlib.cm as cm
+import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -44,31 +46,33 @@ def create_graph():
 
 
 def visualize_graph(G):
-    # Вычисление PageRank
     pagerank = nx.pagerank(G)
-
-    # Получаем размер и цвет узлов по значению PageRank
     node_sizes = [v * 3000 for v in pagerank.values()]
     node_colors = list(pagerank.values())
 
-    # Положение узлов
-    pos = nx.spring_layout(G)
+    pos = nx.spring_layout(G, seed=42)
 
-    # Рисуем узлы в соответствии с PageRank
+    norm = mcolors.Normalize(vmin=min(node_colors), vmax=max(node_colors))
+    cmap = cm.viridis
+
+    fig, ax = plt.subplots(figsize=(10, 8))
+
     nodes = nx.draw_networkx_nodes(
-        G, pos, node_size=node_sizes, node_color=node_colors, cmap=plt.cm.viridis
+        G, pos, node_size=node_sizes, node_color=node_colors, cmap=cmap, ax=ax
     )
 
-    # Рисуем ребра и метки
-    nx.draw_networkx_edges(G, pos, arrows=True)
+    nx.draw_networkx_edges(G, pos, arrows=True, ax=ax)
     labels = {node: f"{node}\n{rank:.2f}" for node, rank in pagerank.items()}
-    nx.draw_networkx_labels(G, pos, labels, font_size=10)
+    nx.draw_networkx_labels(G, pos, labels, font_size=8, ax=ax)
 
-    sm = plt.cm.ScalarMappable(cmap=plt.cm.viridis)
-    sm.set_array(node_colors)
-    plt.colorbar(sm, label="PageRank")
+    sm = cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
 
-    plt.title("Граф для визуализации алгоритма PageRank")
+    fig.colorbar(sm, ax=ax, label="PageRank")
+
+    ax.set_title("Граф для визуализации алгоритма PageRank")
+    ax.axis("off")
+    plt.tight_layout()
     plt.show()
 
 

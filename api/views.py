@@ -1,9 +1,10 @@
-from rest_framework.response import Response
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
                                      UpdateAPIView)
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from api.serializers import (BookDetailedSerializer, BookSerializer,
                              UserSerializer)
@@ -88,9 +89,7 @@ class StatisticsAPIView(APIView):
     def get(self, request):
         statistics_data = get_statistics()
         serialized_data = {
-            "top_books": BookSerializer(
-                statistics_data["top_books"], many=True
-            ).data,
+            "top_books": BookSerializer(statistics_data["top_books"], many=True).data,
         }
         statistics_data.update(serialized_data)
         return Response(statistics_data)

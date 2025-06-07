@@ -42,12 +42,12 @@ class BookDetailedSerializer(ModelSerializer):
 
 
 class UserSerializer(ModelSerializer):
-    connection = ConnectionSerializer(read_only=True, mane=True)
-    favourite_genres = GenreSerializer(read_only=True, mane=True)
+    connection = ConnectionSerializer(read_only=True, many=True)
+    favourite_genres = GenreSerializer(read_only=True, many=True)
 
     class Meta:
         model = User
-        fields = ["id", "password", "email", "name", "avatar"]
+        fields = ["id", "password", "email", "name", "avatar", "favourite_genres", "connection"]
 
 
 class UserProfileSerializer(ModelSerializer):

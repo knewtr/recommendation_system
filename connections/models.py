@@ -26,6 +26,3 @@ class Connection(models.Model):
 
     def __str__(self):
         return f"Рейтинг книги - {self.rating}"
-
-
-# здесь должна быть функция обновления/сохранения рейтинга
