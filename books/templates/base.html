@@ -1,0 +1,23 @@
+{% load static %}
+<!doctype html>
+
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewpoirt" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Сервис рекомендаций книг {% endblock %}</title>
+
+    <script src="{% static 'js/color-modes.js'%}"></script>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  </head>
+
+  <body>
+      <header data-bs-theme="dark">
+        {% include 'includes/nav_menu.html' %}
+      </header>
+
+      {% block content %}{% endblock %}
+
+      <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

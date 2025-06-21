@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex gap-2">
+            <a href="{% url 'books:book_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-house-door me-1"></i> На главную
+            </a>
+        </div>
+    </div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">{{ object.first_name }} {{ object.last_name }}</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Дата рождения</dt>
+            <dd class="col-sm-9">{{ object.birth_date }}</dd>
+
+            <dt class="col-sm-3">Жанр</dt>
+            <dd class="col-sm-9">{{ object.genre }}</dd>
+        </dl>
+
+        {% if object.book_set.exists %}
+            <h5 class="mt-4">Книги автора:</h5>
+            <ul>
+                {% for book in object.book_set.all %}
+                    <li>{{ book.title }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Нет опубликованных книг</p>
+        {% endif %}
+    </div>
+
+    {% if user == object.owner %}
+        <div class="card-footer text-end">
+            <a class="btn btn-outline-primary btn-sm"
+               href="{% url 'books:author_update' object.pk %}">Редактировать</a>
+        </div>
+    {% endif %}
+</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

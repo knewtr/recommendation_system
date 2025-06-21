@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col">
+          <div class="card shadow-sm">
+            <img src="{{ user.avatar | media_filter }}">
+            <div class="card-body">
+              <p class="card-text">{{ user.email }}</p>
+
+
+                <div class="d-flex justify-content-center justify-content-md-start gap-4">
+                    <div class="text-center">
+                        <div class="h4 mb-0">{{ rating.count }}</div>
+                            <small class="text-white-50">Оценок</small>
+                        </div>
+                        <div class="text-center">
+                            <div class="h4 mb-0">{{ user.favourite_genre.count }}</div>
+                            <small class="text-white-50">Жанров</small>
+                        </div>
+                    </div>
+                </div>
+
+
+          <div class="card-body p-4">
+            <div class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="h4 mb-0">
+                        <i class="bi bi-tags text-primary me-2"></i>Любимые жанры
+                    </h3>
+                </div>
+
+                {% if user.favourite_genre.all %}
+                <div class="d-flex flex-wrap gap-2">
+                    {% for genre in user.favourite_genre.all %}
+                    <a href="{% url 'books:genre_detail' genre.pk %}"
+                       class="badge bg-primary bg-opacity-10 text-primary text-decoration-none py-2 px-3">
+                        <i class="bi bi-tag-fill me-1"></i>{{ genre.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-light border text-center py-4">
+                    <i class="bi bi-tag text-muted display-6 mb-3"></i>
+                    <p class="mb-0">Любимые жанры не выбраны</p>
+                    <a href="{% url 'users:profile_update' user.pk %}#genres" class="btn btn-sm btn-primary mt-3">
+                        Выбрать жанры
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="h4 mb-0">
+                        <i class="bi bi-star-fill text-warning me-2"></i>Мои оценки
+                    </h3>
+                    <span class="badge bg-primary bg-opacity-10 text-primary">
+                        Всего: {{ ratings.count }}
+                    </span>
+                </div>
+
+                {% if ratings %}
+                <div class="list-group">
+                    {% for rating in ratings|slice:":10" %}
+                    <a href="{% url 'books:book_detail' rating.book.id %}"
+                       class="list-group-item list-group-item-action border-0 py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <h5 class="mb-1">{{ rating.book.title }}</h5>
+                                    <small class="text-muted">
+                                        {{ rating.book.author }} ({{ rating.book.publication_date }})
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="badge bg-{% if rating.rating >= 7 %}success{% elif rating.rating >= 4 %}warning{% else %}danger{% endif %} bg-opacity-10 text-{% if rating.rating >= 7 %}success{% elif rating.rating >= 4 %}warning{% else %}danger{% endif %} px-3 py-2">
+                                {{ rating.rating }}
+                            </span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+
+                {% if ratings.count > 10 %}
+                <div class="text-center mt-3">
+                    <button class="btn btn-outline-primary"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#allRatings">
+                        Показать все ({{ ratings.count }})
+                    </button>
+                </div>
+
+                <div class="collapse" id="allRatings">
+                    <div class="list-group mt-3">
+                        {% for rating in ratings|slice:"10:" %}
+                        <a href="{% url 'books:book_detail' rating.book.id %}"
+                           class="list-group-item list-group-item-action border-0 py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded bg-light d-flex align-items-center justify-content-center me-3"
+                                         style="width: 50px; height: 75px;">
+                                        <i class="bi bi-film text-muted"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">{{ rating.book.title }}</h5>
+                                        <small class="text-muted">
+                                            {{ rating.books.author }} ({{ rating.book.publication_date }})
+                                        </small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-{% if rating.rating >= 7 %}success{% elif rating.rating >= 4 %}warning{% else %}danger{% endif %} bg-opacity-10 text-{% if rating.rating >= 7 %}success{% elif rating.rating >= 4 %}warning{% else %}danger{% endif %} px-3 py-2">
+                                {{ rating.rating }}
+                            </span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="alert alert-light border text-center py-4">
+                    <i class="bi bi-star text-muted display-6 mb-3"></i>
+                    <p class="mb-0">Вы еще не оценили ни одной книги</p>
+                    <a href="{% url 'books:book_list' %}" class="btn btn-primary mt-3">
+                        Найти книги
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a class="btn btn-outline-primary" href="{% url 'users:profile_update' pk=user.pk %}" role="button">Редактировать</a>
+                  <a class="btn btn-outline-primary" href="{% url 'books:home' %}" role="button">Назад</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+
+
+
+{% endblock %}

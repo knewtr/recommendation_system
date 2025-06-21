@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4">
+    <h2>Наши рекомендации:</h2>
+
+      <div class="accordion" id="recommendationAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingPageRank">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePageRank">
+              Топ-книги (PageRank)
+            </button>
+          </h2>
+          <div id="collapsePageRank" class="accordion-collapse collapse show" data-bs-parent="#recommendationAccordion">
+            <div class="accordion-body">
+                {% for book in pr_rec %}
+                <a href="{% url 'books:book_detail' book.id %}" class="btn btn-outline-secondary" data-rec-type="knn">
+                    <span> {{ book.title }} {{ book.author }}</span>
+                    <span class="badge bg-outline text-white ms-2"> {{ book.rating|floatformat:2 }} </span>
+                </a>
+                {% empty %}
+                <div class="alert alert-warning">Рекомендаций не найдено</div>
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion" id="recommendationAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingKNN">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKNN">
+                  Персональные рекомендации (KNN)
+                </button>
+              </h2>
+              <div id="collapseKNN" class="accordion-collapse collapse show" data-bs-parent="#recommendationAccordion">
+                <div class="accordion-body">
+                    {% for book in knn_rec %}
+                    <a href="{% url 'books:book_detail' book.id %}" class="btn btn-outline-secondary" data-rec-type="knn">
+                        <span> {{ book.title }} {{ book.author }}</span>
+                        <span class="badge bg-outline text-white ms-2"> {{ book.rating|floatformat:2 }} </span>
+                    </a>
+                    {% empty %}
+                    <div class="alert alert-warning">Рекомендаций не найдено</div>
+                    {% endfor %}
+                </div>
+              </div>
+            </div>
+{% endblock %}
